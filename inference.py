@@ -108,7 +108,13 @@ class DiscreteDistribution(dict):
         """
         "*** YOUR CODE HERE ***"
         """This is val betweeen 0.0 and 1.0"""
-        raiseNotDefined()
+        self.normalize()
+        rand = random.random()
+        n = 0
+        for key, item in self.items():
+            n+= item
+            if rand <= n:
+                return key
 
 
 class InferenceModule:
@@ -348,7 +354,14 @@ class ParticleFilter(InferenceModule):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        """Loop over all the legal position and distribute particles"""
+        """Loop through particles only located in legal positions"""
+        part = 0
+        while part < self.numParticles:
+            for pos in self.legalPositions:
+                self.particles.append(pos)
+                part += 1
+
 
     def observeUpdate(self, observation, gameState):
         """
@@ -382,7 +395,13 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        """Loop through the list of particles adding each pos to the distro"""
+
+        distro = DiscreteDistribution()
+        for par in self.particles:
+            distro[par] += 1.0
+        distro.normalize()
+        return distro
 
 
 class JointParticleFilter(ParticleFilter):
