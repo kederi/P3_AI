@@ -304,6 +304,7 @@ class ExactInference(InferenceModule):
         jail = self.getJailPosition()
         pac = gameState.getPacmanPosition()
         """print(observation)"""
+        """P2"""
         for pos in  self.allPositions:
             """Want to get obs prob for each ghost"""
             ghostObsProb = self.getObservationProb(observation, pac, pos, jail)
