@@ -18,6 +18,7 @@ import itertools
 import random
 import busters
 import game
+import util
 
 from util import manhattanDistance, raiseNotDefined
 import random
@@ -327,7 +328,13 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        newBeliefs = util.Counter()
+        # print(gameState.getPacmanPosition)
+        for oldPos in self.allPositions:
+            newPosDist = self.getPositionDistribution(gameState, oldPos)
+            for pos in self.allPositions:
+                newBeliefs[pos] += (newPosDist[pos] * self.beliefs[oldPos])
+        self.beliefs = newBeliefs
 
     def getBeliefDistribution(self):
         return self.beliefs
@@ -376,6 +383,7 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
+
         raiseNotDefined()
 
     def elapseTime(self, gameState):
