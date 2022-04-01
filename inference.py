@@ -80,6 +80,8 @@ class DiscreteDistribution(dict):
         "*** YOUR CODE HERE ***"
         """First want the total of the keys """
         total = self.total()
+        if total == 0:
+            return None
         for key, item in self.items():
             self[key] = item/total
 
@@ -297,8 +299,15 @@ class ExactInference(InferenceModule):
         position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
-
+        """Loop over all the ghost positions"""
+        """Use the method we wrote earlier with the Jail, Pacman and Ghost positions"""
+        jail = self.getJailPosition()
+        pac = gameState.getPacmanPosition()
+        """print(observation)"""
+        for pos in  self.allPositions:
+            """Want to get obs prob for each ghost"""
+            ghostObsProb = self.getObservationProb(observation, pac, pos, jail)
+            self.beliefs[pos] = self.beliefs[pos] * ghostObsProb
         self.beliefs.normalize()
 
     def elapseTime(self, gameState):
