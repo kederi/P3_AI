@@ -404,11 +404,12 @@ class ParticleFilter(InferenceModule):
         if distro.total() == 0:
             """If it is zero then need to inituniformely"""
             self.initializeUniformly(gameState)
+            return
+        particles = []
+        for particle in range(self.numParticles):
+            particles.append(distro.sample())
 
-        else:
-            self.particles = []
-            for particle in range(self.numParticles):
-                self.particles.append(distro.sample())
+        self.particles = particles
 
     def elapseTime(self, gameState):
         """
@@ -416,7 +417,15 @@ class ParticleFilter(InferenceModule):
         gameState.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        newParticles = []
+
+        for oldPos in self.allPositions:
+            newPosDist = self.getPositionDistribution(gameState, oldPos)
+            for pos in self.allPositions:
+                newParticles.append(newPosDist.sample())
+
+        self.particles = newParticles
+
 
     def getBeliefDistribution(self):
         """
@@ -469,6 +478,11 @@ class JointParticleFilter(ParticleFilter):
         listVals = list(cartProd)
         random.shuffle(listVals)
 
+        """Add particles into self.particles"""
+        for i in range(self.numParticles):
+            size = len(listVals)
+            """You want to use Mod here to determine location to index, typical indexing """
+            self.particles.append(listVals[i % size])
 
     def addGhostAgent(self, agent):
         """
@@ -501,7 +515,23 @@ class JointParticleFilter(ParticleFilter):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        """To loop over the ghosts"""
+        """Same idea as before except need to loop over the ghosts"""
+
+        """Create a new discrete distribution"""
+        distro = DiscreteDistribution
+
+        for point in self.particles:
+
+            for i in range(self.numGhosts):
+                """Get the Jail position"""
+                jailPos = self.getJailPosition(i)
+
+        """Reinitialize down here"""
+        if distro.total() == 0:
+            self.initializeUniformly(gameState)
+            return
 
     def elapseTime(self, gameState):
         """
