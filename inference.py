@@ -383,8 +383,32 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
+        # TODO stuck Ugh
+        """First construct a new Distribution"""
+        distro = DiscreteDistribution()
+        pacPos = gameState.getPacmanPosition()
+        jail = self.getJailPosition()
 
-        raiseNotDefined()
+        """Loop over self.particles"""
+        for point in self.particles:
+            """for each particle point want to get the probability of the observation"""
+            probab = self.getObservationProb(observation, pacPos, point, jail)
+            if point in distro:
+                distro[point] += probab
+            else:
+                distro[point] = probab
+        """Have to normalize the distro after"""
+        distro.normalize()
+
+        """Must handle special case"""
+        if distro.total() == 0:
+            """If it is zero then need to inituniformely"""
+            self.initializeUniformly(gameState)
+
+        else:
+            self.particles = []
+            for particle in range(self.numParticles):
+                self.particles.append(distro.sample())
 
     def elapseTime(self, gameState):
         """
@@ -437,7 +461,14 @@ class JointParticleFilter(ParticleFilter):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        """Consistent distribution across positions"""
+        """Use itertools for cartesian product"""
+        """Then shuffle"""
+        """Then mod operator"""
+        cartProd = itertools.product(self.legalPositions, repeat=self.numGhosts)
+        listVals = list(cartProd)
+        random.shuffle(listVals)
+
 
     def addGhostAgent(self, agent):
         """
