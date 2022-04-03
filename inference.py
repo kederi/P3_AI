@@ -520,18 +520,37 @@ class JointParticleFilter(ParticleFilter):
         """Same idea as before except need to loop over the ghosts"""
 
         """Create a new discrete distribution"""
-        distro = DiscreteDistribution
-
+        distro = DiscreteDistribution()
         for point in self.particles:
-
+            prob = 1
             for i in range(self.numGhosts):
                 """Get the Jail position"""
                 jailPos = self.getJailPosition(i)
+                pacPos = gameState.getPacmanPosition()
+                """Get the observation prob like in 6 but this time in the loop over the ghosts"""
+                prob = prob * self.getObservationProb(observation[i], pacPos, point[i], jailPos)
+                """print(prob)"""
+            if point in distro:
+                distro[point] += prob
+            else:
+                distro[point] = prob
+
+        """Have to normalize the distro after"""
+        distro.normalize()
 
         """Reinitialize down here"""
         if distro.total() == 0:
             self.initializeUniformly(gameState)
             return
+
+        particles = []
+        for particle in range(self.numParticles):
+            particles.append(distro.sample())
+
+        self.particles = particles
+
+
+
 
     def elapseTime(self, gameState):
         """
